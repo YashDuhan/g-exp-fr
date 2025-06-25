@@ -37,18 +37,13 @@ export default function Component() {
     }
   }
 
-  const handleUrlChange = (value: string) => {
-    setGameUrl(value)
-    if (value && !validateGameUrl(value)) {
-      setUrlError("Please enter a valid Gamee URL")
-    } else {
-      setUrlError("")
-    }
-  }
-
   const handleSubmit = async () => {
     if (!gameUrl || !score) return
 
+    // Clear previous errors
+    setUrlError("")
+
+    // Validate on submit
     if (!validateGameUrl(gameUrl)) {
       setUrlError("Please enter a valid Gamee URL")
       return
@@ -94,175 +89,223 @@ export default function Component() {
     setCurrentStep("landing")
   }
 
-  const LandingPage = () => (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center p-4">
-      <div className="max-w-4xl mx-auto text-center space-y-8">
-        <div className="space-y-4">
-          <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white leading-tight">
-            If it exists, there exists a{" "}
-            <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">crack</span>
-          </h1>
-          <p className="text-xl md:text-2xl text-slate-300 max-w-2xl mx-auto">
-            Unlock the potential. Submit your game scores and break through the limits.
+  // Render different steps based on current step
+  if (currentStep === "landing") {
+    return (
+      <div className="relative">
+        <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center p-4">
+          <div className="max-w-4xl mx-auto text-center space-y-8">
+            <div className="space-y-4">
+              <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white leading-tight">
+                If it exists, there exists a{" "}
+                <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">crack</span>
+              </h1>
+              <p className="text-xl md:text-2xl text-slate-300 max-w-2xl mx-auto">
+                Unlock the potential. Submit your game scores and break through the limits.
+              </p>
+            </div>
+
+            <Button
+              onClick={() => setCurrentStep("form")}
+              size="lg"
+              className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-8 py-6 text-lg font-semibold rounded-xl shadow-2xl transform hover:scale-105 transition-all duration-200"
+            >
+              Get Started
+            </Button>
+          </div>
+        </div>
+        <div className="fixed bottom-4 left-4 right-4 text-center">
+          <p className="text-white/60 text-sm flex items-center justify-center gap-2">
+            Made By:{" "}
+            <a
+              href="https://github.com/YashDuhan"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-purple-400 hover:text-purple-300 transition-colors flex items-center gap-1"
+            >
+              <Github className="w-4 h-4" />
+              github.com/YashDuhan
+            </a>
           </p>
         </div>
-
-        <Button
-          onClick={() => setCurrentStep("form")}
-          size="lg"
-          className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-8 py-6 text-lg font-semibold rounded-xl shadow-2xl transform hover:scale-105 transition-all duration-200"
-        >
-          Get Started
-        </Button>
       </div>
-    </div>
-  )
+    )
+  }
 
-  const FormPage = () => (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center p-4">
-      <Card className="w-full max-w-md bg-white/10 backdrop-blur-lg border-white/20 shadow-2xl">
-        <CardHeader className="text-center">
-          <CardTitle className="text-2xl font-bold text-white">Submit Your Score</CardTitle>
-          <CardDescription className="text-slate-300">Enter your game URL and target score</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          <div className="space-y-2">
-            <Label htmlFor="gameUrl" className="text-white font-medium">
-              Game URL
-            </Label>
-            <Input
-              id="gameUrl"
-              type="url"
-              placeholder="https://prizes.gamee.com/game-bot/..."
-              value={gameUrl}
-              onChange={(e) => handleUrlChange(e.target.value)}
-              className="bg-white/10 border-white/20 text-white placeholder:text-slate-400 focus:border-purple-400"
-            />
-            {urlError && (
-              <Alert className="bg-red-500/10 border-red-500/20">
-                <XCircle className="h-4 w-4 text-red-400" />
-                <AlertDescription className="text-red-400">{urlError}</AlertDescription>
-              </Alert>
-            )}
-          </div>
+  if (currentStep === "form") {
+    return (
+      <div className="relative">
+        <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center p-4">
+          <Card className="w-full max-w-md bg-white/10 backdrop-blur-lg border-white/20 shadow-2xl">
+            <CardHeader className="text-center">
+              <CardTitle className="text-2xl font-bold text-white">Submit Your Score</CardTitle>
+              <CardDescription className="text-slate-300">Enter your game URL and target score</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="space-y-2">
+                <Label htmlFor="gameUrl" className="text-white font-medium">
+                  Game URL
+                </Label>
+                <Input
+                  id="gameUrl"
+                  type="url"
+                  placeholder="https://prizes.gamee.com/game-bot/..."
+                  value={gameUrl}
+                  onChange={(e) => setGameUrl(e.target.value)}
+                  className="bg-white/10 border-white/20 text-white placeholder:text-slate-400 focus:border-purple-400"
+                />
+                {urlError && (
+                  <Alert className="bg-red-500/10 border-red-500/20">
+                    <XCircle className="h-4 w-4 text-red-400" />
+                    <AlertDescription className="text-red-400">{urlError}</AlertDescription>
+                  </Alert>
+                )}
+              </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="score" className="text-white font-medium">
-              Target Score
-            </Label>
-            <Input
-              id="score"
-              type="number"
-              placeholder="Enter score (e.g., 100)"
-              value={score}
-              onChange={(e) => setScore(e.target.value)}
-              className="bg-white/10 border-white/20 text-white placeholder:text-slate-400 focus:border-purple-400"
-            />
-          </div>
-        </CardContent>
-        <CardFooter className="flex gap-3">
-          <Button
-            variant="outline"
-            onClick={() => setCurrentStep("landing")}
-            className="flex-1 bg-transparent border-white/20 text-white hover:bg-white/10"
-          >
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Back
-          </Button>
-          <Button
-            onClick={handleSubmit}
-            disabled={!gameUrl || !score || !!urlError || isLoading}
-            className="flex-1 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
-          >
-            {isLoading ? (
-              <>
-                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                Submitting...
-              </>
-            ) : (
-              "Submit Score"
-            )}
-          </Button>
-        </CardFooter>
-      </Card>
-    </div>
-  )
+              <div className="space-y-2">
+                <Label htmlFor="score" className="text-white font-medium">
+                  Target Score
+                </Label>
+                <Input
+                  id="score"
+                  type="number"
+                  placeholder="Enter score (e.g., 100)"
+                  value={score}
+                  onChange={(e) => setScore(e.target.value)}
+                  className="bg-white/10 border-white/20 text-white placeholder:text-slate-400 focus:border-purple-400"
+                />
+              </div>
+            </CardContent>
+            <CardFooter className="flex gap-3">
+              <Button
+                variant="outline"
+                onClick={() => setCurrentStep("landing")}
+                className="flex-1 bg-transparent border-white/20 text-white hover:bg-white/10"
+              >
+                <ArrowLeft className="w-4 h-4 mr-2" />
+                Back
+              </Button>
+              <Button
+                onClick={handleSubmit}
+                disabled={!gameUrl || !score || isLoading}
+                className="flex-1 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
+              >
+                {isLoading ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    Submitting...
+                  </>
+                ) : (
+                  "Submit Score"
+                )}
+              </Button>
+            </CardFooter>
+          </Card>
+        </div>
+        <div className="fixed bottom-4 left-4 right-4 text-center">
+          <p className="text-white/60 text-sm flex items-center justify-center gap-2">
+            Made By:{" "}
+            <a
+              href="https://github.com/YashDuhan"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-purple-400 hover:text-purple-300 transition-colors flex items-center gap-1"
+            >
+              <Github className="w-4 h-4" />
+              github.com/YashDuhan
+            </a>
+          </p>
+        </div>
+      </div>
+    )
+  }
 
-  const SuccessPage = () => (
-    <div className="min-h-screen bg-gradient-to-br from-green-900 via-emerald-900 to-slate-900 flex items-center justify-center p-4">
-      <Card className="w-full max-w-md bg-white/10 backdrop-blur-lg border-white/20 shadow-2xl text-center">
-        <CardHeader>
-          <div className="mx-auto w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center mb-4">
-            <CheckCircle className="w-8 h-8 text-green-400" />
-          </div>
-          <CardTitle className="text-2xl font-bold text-white">Success!</CardTitle>
-          <CardDescription className="text-slate-300">{responseMessage}</CardDescription>
-        </CardHeader>
-        <CardFooter>
-          <Button
-            onClick={resetForm}
-            className="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700"
-          >
-            Submit Another Score
-          </Button>
-        </CardFooter>
-      </Card>
-    </div>
-  )
+  if (currentStep === "success") {
+    return (
+      <div className="relative">
+        <div className="min-h-screen bg-gradient-to-br from-green-900 via-emerald-900 to-slate-900 flex items-center justify-center p-4">
+          <Card className="w-full max-w-md bg-white/10 backdrop-blur-lg border-white/20 shadow-2xl text-center">
+            <CardHeader>
+              <div className="mx-auto w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center mb-4">
+                <CheckCircle className="w-8 h-8 text-green-400" />
+              </div>
+              <CardTitle className="text-2xl font-bold text-white">Success!</CardTitle>
+              <CardDescription className="text-slate-300">{responseMessage}</CardDescription>
+            </CardHeader>
+            <CardFooter>
+              <Button
+                onClick={resetForm}
+                className="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700"
+              >
+                Submit Another Score
+              </Button>
+            </CardFooter>
+          </Card>
+        </div>
+        <div className="fixed bottom-4 left-4 right-4 text-center">
+          <p className="text-white/60 text-sm flex items-center justify-center gap-2">
+            Made By:{" "}
+            <a
+              href="https://github.com/YashDuhan"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-purple-400 hover:text-purple-300 transition-colors flex items-center gap-1"
+            >
+              <Github className="w-4 h-4" />
+              github.com/YashDuhan
+            </a>
+          </p>
+        </div>
+      </div>
+    )
+  }
 
-  const ErrorPage = () => (
-    <div className="min-h-screen bg-gradient-to-br from-red-900 via-pink-900 to-slate-900 flex items-center justify-center p-4">
-      <Card className="w-full max-w-md bg-white/10 backdrop-blur-lg border-white/20 shadow-2xl text-center">
-        <CardHeader>
-          <div className="mx-auto w-16 h-16 bg-red-500/20 rounded-full flex items-center justify-center mb-4">
-            <XCircle className="w-8 h-8 text-red-400" />
-          </div>
-          <CardTitle className="text-2xl font-bold text-white">Error</CardTitle>
-          <CardDescription className="text-slate-300">{responseMessage}</CardDescription>
-        </CardHeader>
-        <CardFooter className="flex gap-3">
-          <Button
-            variant="outline"
-            onClick={() => setCurrentStep("form")}
-            className="flex-1 bg-transparent border-white/20 text-white hover:bg-white/10"
-          >
-            Try Again
-          </Button>
-          <Button
-            onClick={resetForm}
-            className="flex-1 bg-gradient-to-r from-red-600 to-pink-600 hover:from-red-700 hover:to-pink-700"
-          >
-            Start Over
-          </Button>
-        </CardFooter>
-      </Card>
-    </div>
-  )
+  if (currentStep === "error") {
+    return (
+      <div className="relative">
+        <div className="min-h-screen bg-gradient-to-br from-red-900 via-pink-900 to-slate-900 flex items-center justify-center p-4">
+          <Card className="w-full max-w-md bg-white/10 backdrop-blur-lg border-white/20 shadow-2xl text-center">
+            <CardHeader>
+              <div className="mx-auto w-16 h-16 bg-red-500/20 rounded-full flex items-center justify-center mb-4">
+                <XCircle className="w-8 h-8 text-red-400" />
+              </div>
+              <CardTitle className="text-2xl font-bold text-white">Error</CardTitle>
+              <CardDescription className="text-slate-300">{responseMessage}</CardDescription>
+            </CardHeader>
+            <CardFooter className="flex gap-3">
+              <Button
+                variant="outline"
+                onClick={() => setCurrentStep("form")}
+                className="flex-1 bg-transparent border-white/20 text-white hover:bg-white/10"
+              >
+                Try Again
+              </Button>
+              <Button
+                onClick={resetForm}
+                className="flex-1 bg-gradient-to-r from-red-600 to-pink-600 hover:from-red-700 hover:to-pink-700"
+              >
+                Start Over
+              </Button>
+            </CardFooter>
+          </Card>
+        </div>
+        <div className="fixed bottom-4 left-4 right-4 text-center">
+          <p className="text-white/60 text-sm flex items-center justify-center gap-2">
+            Made By:{" "}
+            <a
+              href="https://github.com/YashDuhan"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-purple-400 hover:text-purple-300 transition-colors flex items-center gap-1"
+            >
+              <Github className="w-4 h-4" />
+              github.com/YashDuhan
+            </a>
+          </p>
+        </div>
+      </div>
+    )
+  }
 
-  const Footer = () => (
-    <div className="fixed bottom-4 left-4 right-4 text-center">
-      <p className="text-white/60 text-sm flex items-center justify-center gap-2">
-        Made By:{" "}
-        <a
-          href="https://github.com/YashDuhan"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-purple-400 hover:text-purple-300 transition-colors flex items-center gap-1"
-        >
-          <Github className="w-4 h-4" />
-          github.com/YashDuhan
-        </a>
-      </p>
-    </div>
-  )
-
-  return (
-    <div className="relative">
-      {currentStep === "landing" && <LandingPage />}
-      {currentStep === "form" && <FormPage />}
-      {currentStep === "success" && <SuccessPage />}
-      {currentStep === "error" && <ErrorPage />}
-      <Footer />
-    </div>
-  )
+  return null
 }
